@@ -1,0 +1,13 @@
+{
+  "projects": {
+    "default": "reste-zauber-dev"
+  },
+  "targets": {},
+  "etags": {
+    "reste-zauber-dev": {
+      "extensionInstances": {
+        "firestore-multimodal-genai": "38f47883b32c707ee8f1d990e8edf66ab774de26b68acc91351e61dfc741719b"
+      }
+    }
+  }
+}
