@@ -1,5 +1,6 @@
 {
   "scripts": {
-    "dev": "firebase emulators:start"
+    "dev": "firebase emulators:start",
+    "deploy": "firebase deploy"
   }
 }
