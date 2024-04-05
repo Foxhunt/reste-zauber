@@ -2,6 +2,7 @@ import { QueryDocumentSnapshot } from "firebase/firestore";
 import { ref, getStorage } from "firebase/storage";
 
 import { useDownloadURL } from "react-firebase-hooks/storage";
+import Markdown from "react-markdown";
 
 export default function Request({ doc }: { doc: QueryDocumentSnapshot }) {
   const data = doc.data();
@@ -12,7 +13,10 @@ export default function Request({ doc }: { doc: QueryDocumentSnapshot }) {
     <div key={doc.id} style={{ paddingTop: "10px" }}>
       <div style={{ paddingTop: "5px" }}>prompt: {data.prompt}</div>
       {data.response && (
-        <div style={{ paddingTop: "5px" }}>out: {data.response}</div>
+        <div style={{ paddingTop: "5px" }}>
+          out:
+          <Markdown>{data.response}</Markdown>
+        </div>
       )}
       <div style={{ paddingTop: "5px" }}>state: {data.status?.state}</div>
       {data.status?.error && (
