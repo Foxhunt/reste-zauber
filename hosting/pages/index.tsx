@@ -1,8 +1,18 @@
-import { addDoc, collection, getFirestore } from "firebase/firestore";
+import { FormEvent, useCallback } from "react";
+
+import {
+  addDoc,
+  collection,
+  query,
+  orderBy,
+  getFirestore,
+  serverTimestamp,
+} from "firebase/firestore";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
-import { FormEvent } from "react";
 
 import { useCollection } from "react-firebase-hooks/firestore";
+
+import Request from "../components/Request";
 
 interface CustomElements extends HTMLFormControlsCollection {
   image: HTMLInputElement;
@@ -13,27 +23,33 @@ interface CustomForm extends HTMLFormElement {
   readonly elements: CustomElements;
 }
 
-const collectionRef = collection(getFirestore(), "generate");
+const collectionRef = collection(getFirestore(), "requests");
+
+const queryRef = query(collectionRef, orderBy("createdAt", "desc"));
 
 export default function Page() {
-  const [value, loading, error] = useCollection(collectionRef);
+  const [value] = useCollection(queryRef);
+
+  const handleSubmit = useCallback(async (event: FormEvent<CustomForm>) => {
+    event.preventDefault();
+    const img = event.currentTarget.elements.image.files[0];
+    const prompt = event.currentTarget.elements.prompt.value;
+
+    if (img) {
+      const filreRef = ref(getStorage(), "images/" + img.name);
+      await uploadBytes(filreRef, img);
+
+      await addDoc(collectionRef, {
+        prompt,
+        image: filreRef.toString(),
+        createdAt: serverTimestamp(),
+      });
+    }
+  }, []);
 
   return (
     <div>
-      <form
-        onSubmit={async (event: FormEvent<CustomForm>) => {
-          event.preventDefault();
-          const img = event.currentTarget.elements.image.files[0];
-          const prompt = event.currentTarget.elements.prompt.value;
-
-          const filreRef = ref(getStorage(), img.name);
-          await uploadBytes(filreRef, img);
-          await addDoc(collectionRef, {
-            img: filreRef.toString(),
-            prompt,
-          });
-        }}
-      >
+      <form onSubmit={handleSubmit}>
         <label>
           File
           <input type="file" name="image" accept="image/png, image/jpeg" />
@@ -46,9 +62,7 @@ export default function Page() {
         <input type="submit" />
       </form>
       {value?.docs.map((doc) => (
-        <div key={doc.id} style={{ paddingTop: "10px" }}>
-          {doc.data().output}
-        </div>
+        <Request key={doc.id} doc={doc} />
       ))}
     </div>
   );
