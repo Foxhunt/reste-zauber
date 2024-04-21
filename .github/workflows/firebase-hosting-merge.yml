@@ -27,7 +27,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
 
-      - run: npm ci && npm -w hosting run build
+      - run: npm ci
 
       # - uses: FirebaseExtended/action-hosting-deploy@v0
       #   with:
