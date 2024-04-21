@@ -27,13 +27,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
 
-      - run: cd hosting && npm ci && npm run build
+      - run: npm ci && npm -w hosting run build
 
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      # - uses: FirebaseExtended/action-hosting-deploy@v0
+      #   with:
+      #     repoToken: "${{ secrets.GITHUB_TOKEN }}"
+      #     firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_RESTE_ZAUBER_DEV }}"
+      #     channelId: live
+      #     projectId: reste-zauber-dev
+      #   env:
+
+      - uses: w9jds/firebase-action@master
         with:
-          repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_RESTE_ZAUBER_DEV }}"
-          channelId: live
-          projectId: reste-zauber-dev
+          args: deploy -f
         env:
+          GCP_SA_KEY: ${{  secrets.FIREBASE_SERVICE_ACCOUNT_RESTE_ZAUBER_DEV }}
           FIREBASE_CLI_EXPERIMENTS: webframeworks
