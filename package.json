@@ -2,5 +2,8 @@
   "scripts": {
     "dev": "firebase emulators:start",
     "deploy": "firebase deploy"
-  }
+  },
+  "workspaces": [
+    "hosting"
+  ]
 }
