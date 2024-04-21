@@ -1,3 +1,5 @@
+import "@/styles/globals.css";
+
 import { initializeApp } from "firebase/app";
 import type { AppProps } from "next/app";
 
